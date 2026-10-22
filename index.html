@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lluvias y Agua en Ciudad Juárez | TSU Paramédico UTCJ</title>
+<meta name="description" content="Proyecto TR05 Competitividad: Optimización de la respuesta prehospitalaria y prevención de riesgos sanitarios por inundaciones pluviales en Ciudad Juárez. TSU Paramédico, UTCJ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul-noche:#061a2e;
+  --azul-profundo:#0b2d4f;
+  --azul:#1565c0;
+  --agua:#29b6f6;
+  --agua-claro:#b3e5fc;
+  --verde:#00a65a;
+  --rojo:#e53935;
+  --ambar:#ffb300;
+  --blanco:#ffffff;
+  --gris:#eef3f8;
+  --texto:#16263a;
+  --texto-suave:#4f6478;
+  --sombra:0 10px 30px rgba(6,26,46,.12);
+  --radio:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--texto);background:var(--gris);line-height:1.65;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif;line-height:1.2}
+a{color:var(--azul)}
+img{max-width:100%}
+.contenedor{width:min(1150px,100% - 32px);margin-inline:auto}
+
+/* ===== BARRA DE PROGRESO ===== */
+#progreso{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--agua),var(--verde));z-index:1001;transition:width .1s}
+
+/* ===== NAVEGACIÓN ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;transition:background .3s,box-shadow .3s}
+nav.solida{background:rgba(6,26,46,.95);backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.nav-int{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-family:'Montserrat';font-weight:800;font-size:1.05rem}
+.logo .gota{width:30px;height:30px;background:linear-gradient(160deg,var(--agua),var(--azul));border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 0 15px rgba(41,182,246,.6)}
+.menu{display:flex;gap:4px;list-style:none}
+.menu a{color:#dbe9f6;text-decoration:none;font-size:.88rem;font-weight:600;padding:8px 12px;border-radius:30px;transition:.25s}
+.menu a:hover,.menu a.activo{background:rgba(41,182,246,.2);color:#fff}
+.hamburguesa{display:none;background:none;border:0;cursor:pointer;padding:6px}
+.hamburguesa span{display:block;width:26px;height:3px;background:#fff;margin:5px 0;border-radius:3px;transition:.3s}
+
+/* ===== HERO ===== */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;background:radial-gradient(ellipse at top,#123c66 0%,var(--azul-noche) 70%);color:#fff;overflow:hidden;padding:120px 0 160px}
+#lluvia{position:absolute;inset:0;width:100%;height:100%}
+.relampago{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:relampago 9s infinite}
+@keyframes relampago{0%,93%,100%{opacity:0}94%{opacity:.35}95%{opacity:0}96%{opacity:.2}97%{opacity:0}}
+.hero-cont{position:relative;z-index:2;max-width:820px}
+.etiqueta{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);padding:6px 16px;border-radius:30px;font-size:.82rem;letter-spacing:.5px;margin-bottom:22px;animation:aparecer 1s .2s both}
+.etiqueta .pulso{width:9px;height:9px;border-radius:50%;background:var(--rojo);box-shadow:0 0 0 0 rgba(229,57,53,.7);animation:pulso 1.6s infinite}
+@keyframes pulso{70%{box-shadow:0 0 0 12px rgba(229,57,53,0)}100%{box-shadow:0 0 0 0 rgba(229,57,53,0)}}
+.hero h1{font-size:clamp(2.1rem,5.5vw,4rem);font-weight:900;margin-bottom:20px;animation:aparecer 1s .4s both}
+.hero h1 span{background:linear-gradient(90deg,var(--agua),#80deea,var(--agua));background-size:200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo 4s linear infinite}
+@keyframes brillo{to{background-position:200%}}
+.hero p{font-size:clamp(1rem,2vw,1.2rem);color:#c9dcee;margin-bottom:32px;animation:aparecer 1s .6s both}
+.botones{display:flex;flex-wrap:wrap;gap:14px;animation:aparecer 1s .8s both}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:40px;font-weight:700;text-decoration:none;font-family:'Montserrat';font-size:.95rem;transition:transform .25s,box-shadow .25s;border:0;cursor:pointer}
+.btn-pri{background:linear-gradient(135deg,var(--agua),var(--azul));color:#fff;box-shadow:0 8px 25px rgba(41,182,246,.4)}
+.btn-sec{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(41,182,246,.5)}
+@keyframes aparecer{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.olas{position:absolute;bottom:-1px;left:0;width:100%;height:150px;z-index:1;pointer-events:none}
+.olas .ola{position:absolute;inset:0;background-repeat:repeat-x;background-size:1440px 150px;background-position:0 bottom}
+.ola1{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 150' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' d='M0 112 Q360 80 720 112 T1440 112 V150 H0Z'/%3E%3C/svg%3E");animation:moverOla 14s linear infinite}
+.ola2{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 150' preserveAspectRatio='none'%3E%3Cpath fill='%234fc3f7' d='M0 90 Q360 45 720 90 T1440 90 V150 H0Z'/%3E%3C/svg%3E");opacity:.6;animation:moverOla 20s linear infinite reverse}
+.ola3{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 150' preserveAspectRatio='none'%3E%3Cpath fill='%2329b6f6' d='M0 70 Q360 20 720 70 T1440 70 V150 H0Z'/%3E%3C/svg%3E");opacity:.35;animation:moverOla 28s linear infinite}
+@keyframes moverOla{from{background-position-x:0}to{background-position-x:-1440px}}
+@keyframes ola{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.scroll-ind{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:3;color:#fff;font-size:.75rem;text-align:center;opacity:.8}
+.raton{width:24px;height:38px;border:2px solid #fff;border-radius:14px;margin:6px auto 0;position:relative}
+.raton::after{content:'';position:absolute;top:6px;left:50%;width:4px;height:8px;background:#fff;border-radius:2px;transform:translateX(-50%);animation:rueda 1.6s infinite}
+@keyframes rueda{to{transform:translate(-50%,12px);opacity:0}}
+
+/* ===== SECCIONES ===== */
+section{padding:90px 0;position:relative}
+.sec-blanca{background:#fff}
+.sec-oscura{background:linear-gradient(160deg,var(--azul-profundo),var(--azul-noche));color:#fff}
+.titulo-sec{text-align:center;margin-bottom:55px}
+.titulo-sec .num{display:inline-block;font-family:'Montserrat';font-weight:800;color:var(--agua);font-size:.85rem;letter-spacing:3px;margin-bottom:10px}
+.titulo-sec h2{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:900;margin-bottom:14px}
+.titulo-sec p{max-width:720px;margin:auto;color:var(--texto-suave)}
+.sec-oscura .titulo-sec p{color:#b8cde0}
+.linea{width:70px;height:5px;border-radius:5px;background:linear-gradient(90deg,var(--agua),var(--verde));margin:14px auto 0}
+
+/* revelar al hacer scroll */
+.revelar{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.revelar.visible{opacity:1;transform:none}
+.retraso-1{transition-delay:.1s}.retraso-2{transition-delay:.2s}.retraso-3{transition-delay:.3s}.retraso-4{transition-delay:.4s}
+
+/* ===== FICHA DEL PROYECTO ===== */
+.ficha{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.ficha-item{background:var(--gris);border-radius:var(--radio);padding:22px;border-left:5px solid var(--agua)}
+.ficha-item small{display:block;font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:var(--azul);text-transform:uppercase;margin-bottom:6px}
+.ficha-item strong{font-family:'Montserrat';font-size:1.02rem}
+
+/* ===== CIFRAS ===== */
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.cifra{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radio);padding:28px 22px;text-align:center;transition:transform .3s,background .3s}
+.cifra:hover{transform:translateY(-6px);background:rgba(41,182,246,.12)}
+.cifra .valor{font-family:'Montserrat';font-size:2.8rem;font-weight:900;color:var(--agua);line-height:1}
+.cifra .unidad{font-size:1rem;color:#80deea;font-weight:700}
+.cifra p{font-size:.9rem;color:#c3d6e8;margin-top:10px}
+.cifra .fuente{display:block;font-size:.7rem;color:#7f9bb5;margin-top:8px}
+
+/* ===== TARJETAS ===== */
+.rejilla{display:grid;gap:24px}
+.r2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.r3{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.r4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.tarjeta{background:#fff;border-radius:var(--radio);padding:30px;box-shadow:var(--sombra);transition:transform .35s,box-shadow .35s;position:relative;overflow:hidden}
+.tarjeta:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(6,26,46,.18)}
+.tarjeta::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--agua),var(--azul))}
+.tarjeta.roja::before{background:linear-gradient(90deg,#ff7043,var(--rojo))}
+.tarjeta.verde::before{background:linear-gradient(90deg,#66bb6a,var(--verde))}
+.tarjeta.ambar::before{background:linear-gradient(90deg,#ffd54f,var(--ambar))}
+.icono{width:60px;height:60px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;margin-bottom:18px;background:linear-gradient(135deg,#e1f5fe,#b3e5fc)}
+.roja .icono{background:linear-gradient(135deg,#ffebee,#ffcdd2)}
+.verde .icono{background:linear-gradient(135deg,#e8f5e9,#c8e6c9)}
+.ambar .icono{background:linear-gradient(135deg,#fff8e1,#ffecb3)}
+.tarjeta h3{font-size:1.2rem;margin-bottom:12px}
+.tarjeta p,.tarjeta li{color:var(--texto-suave);font-size:.95rem}
+.tarjeta ul{padding-left:20px;margin-top:10px}
+.tarjeta li{margin-bottom:6px}
+
+/* ===== CONTEXTO ===== */
+.dos-col{display:grid;grid-template-columns:1.1fr 1fr;gap:50px;align-items:center}
+.texto-largo p{margin-bottom:16px;color:var(--texto-suave)}
+.texto-largo strong{color:var(--texto)}
+.ciclo{position:relative;aspect-ratio:1;max-width:430px;margin:auto}
+.ciclo svg{width:100%;height:100%}
+.gota-cae{animation:caer 2.2s ease-in infinite}
+.gota-cae:nth-child(2){animation-delay:.5s}.gota-cae:nth-child(3){animation-delay:1s}.gota-cae:nth-child(4){animation-delay:1.5s}
+@keyframes caer{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(120px);opacity:0}}
+.flecha-flujo{stroke-dasharray:8 8;animation:flujo 1s linear infinite}
+@keyframes flujo{to{stroke-dashoffset:-16}}
+.nube{animation:flotar 6s ease-in-out infinite}
+@keyframes flotar{50%{transform:translateX(15px)}}
+
+/* ===== LÍNEA DE TIEMPO ===== */
+.timeline{position:relative;max-width:900px;margin:auto}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(var(--agua),var(--azul));transform:translateX(-50%);border-radius:4px}
+.evento{position:relative;width:50%;padding:0 40px 40px}
+.evento:nth-child(odd){left:0;text-align:right}
+.evento:nth-child(even){left:50%}
+.evento::after{content:'';position:absolute;top:8px;width:20px;height:20px;border-radius:50%;background:#fff;border:5px solid var(--agua);box-shadow:0 0 0 6px rgba(41,182,246,.2)}
+.evento:nth-child(odd)::after{right:-10px}
+.evento:nth-child(even)::after{left:-10px}
+.evento .fecha{display:inline-block;background:var(--azul);color:#fff;font-weight:700;font-size:.8rem;padding:4px 14px;border-radius:20px;margin-bottom:10px;font-family:'Montserrat'}
+.evento .caja{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:18px}
+.evento h4{margin-bottom:6px;color:#fff}
+.evento p{color:#bcd0e3;font-size:.92rem}
+
+/* ===== ZONAS ===== */
+.filtros{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:34px}
+.filtro{border:2px solid var(--azul);background:#fff;color:var(--azul);font-weight:700;padding:9px 20px;border-radius:30px;cursor:pointer;font-family:'Montserrat';font-size:.85rem;transition:.25s}
+.filtro.activo,.filtro:hover{background:var(--azul);color:#fff}
+.zonas{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.zona{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:var(--sombra);display:flex;gap:14px;align-items:flex-start;transition:transform .3s,opacity .3s}
+.zona.oculta{display:none}
+.zona:hover{transform:scale(1.03)}
+.nivel{flex-shrink:0;width:14px;height:14px;border-radius:50%;margin-top:6px}
+.alto{background:var(--rojo);box-shadow:0 0 10px var(--rojo)}
+.medio{background:var(--ambar);box-shadow:0 0 10px var(--ambar)}
+.zona h4{font-size:1rem;margin-bottom:4px}
+.zona p{font-size:.85rem;color:var(--texto-suave)}
+.zona .tipo{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--azul)}
+.leyenda{display:flex;justify-content:center;gap:24px;margin-top:24px;font-size:.85rem;color:var(--texto-suave);flex-wrap:wrap}
+.leyenda span{display:flex;align-items:center;gap:8px}
+
+/* ===== SIMULADOR ===== */
+.simulador{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:#fff;border-radius:24px;padding:40px;box-shadow:var(--sombra)}
+.escena{position:relative;border-radius:18px;overflow:hidden;background:#0f2742;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.escena svg{display:block;width:100%;height:auto}
+.escena .nota-escala{position:absolute;right:10px;top:8px;font-size:.68rem;color:#b3d4ef;background:rgba(0,0,0,.25);padding:3px 8px;border-radius:10px}
+.control label{font-weight:700;font-family:'Montserrat';display:block;margin-bottom:10px}
+#rango{width:100%;accent-color:var(--azul);height:8px;cursor:pointer}
+.lectura{font-family:'Montserrat';font-size:3rem;font-weight:900;color:var(--azul);margin:10px 0}
+#mensajeRiesgo{padding:18px;border-radius:14px;font-weight:600;transition:background .3s}
+.r-bajo{background:#e8f5e9;color:#1b5e20}
+.r-medio{background:#fff8e1;color:#8d6e00}
+.r-alto{background:#ffebee;color:#b71c1c}
+.lema{margin-top:16px;font-family:'Montserrat';font-weight:800;color:var(--rojo);font-size:1.05rem}
+
+/* ===== PROPUESTA (ACORDEÓN) ===== */
+.acordeon{max-width:950px;margin:auto}
+.acc-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;margin-bottom:14px;overflow:hidden}
+.acc-btn{width:100%;background:none;border:0;color:#fff;text-align:left;padding:22px 26px;display:flex;align-items:center;gap:16px;cursor:pointer;font-family:'Montserrat';font-weight:700;font-size:1.05rem}
+.acc-btn .letra{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--agua),var(--azul));display:grid;place-items:center;font-weight:900;font-size:1.2rem}
+.acc-btn .mas{margin-left:auto;font-size:1.6rem;transition:transform .3s}
+.acc-item.abierto .mas{transform:rotate(45deg)}
+.acc-cont{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.acc-cont-int{padding:0 26px 24px 86px;color:#c3d6e8}
+.acc-cont-int ul{padding-left:20px}
+.acc-cont-int li{margin-bottom:8px}
+.acc-cont-int strong{color:#fff}
+
+/* ===== PROTOCOLO ===== */
+.pasos{counter-reset:paso;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
+.paso{background:#fff;border-radius:var(--radio);padding:28px 24px 24px;box-shadow:var(--sombra);position:relative}
+.paso::before{counter-increment:paso;content:counter(paso);position:absolute;top:-18px;left:24px;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--rojo),#ff7043);color:#fff;font-family:'Montserrat';font-weight:900;display:grid;place-items:center;box-shadow:0 6px 16px rgba(229,57,53,.4)}
+.paso h4{margin:10px 0 8px}
+.paso p{font-size:.92rem;color:var(--texto-suave)}
+
+/* ===== AGUA POTABLE ===== */
+.barra-cont{margin:18px 0}
+.barra-et{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:6px}
+.barra{height:14px;background:#dfe9f3;border-radius:10px;overflow:hidden}
+.barra div{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--agua),var(--azul));transition:width 1.6s ease}
+.barra div.rojo{background:linear-gradient(90deg,#ff8a65,var(--rojo))}
+.cita{background:linear-gradient(135deg,#e1f5fe,#fff);border-left:5px solid var(--azul);padding:22px;border-radius:14px;margin-top:20px;font-style:italic;color:var(--texto-suave)}
+
+/* ===== PESTAÑAS ===== */
+.pestanas{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+.pest{padding:12px 26px;border-radius:30px;border:0;background:#fff;font-family:'Montserrat';font-weight:700;cursor:pointer;box-shadow:var(--sombra);transition:.25s;color:var(--texto)}
+.pest.activo{background:linear-gradient(135deg,var(--agua),var(--azul));color:#fff}
+.panel{display:none;animation:aparecer .5s}
+.panel.activo{display:block}
+.lista-check{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.lista-check li{background:#fff;padding:16px 18px 16px 52px;border-radius:12px;position:relative;box-shadow:0 4px 14px rgba(6,26,46,.07);font-size:.94rem}
+.lista-check li::before{content:'✓';position:absolute;left:16px;top:14px;width:24px;height:24px;border-radius:50%;background:var(--verde);color:#fff;display:grid;place-items:center;font-weight:900;font-size:.8rem}
+
+/* ===== MOCHILA ===== */
+.mochila{max-width:800px;margin:40px auto 0;background:#fff;border-radius:20px;padding:30px;box-shadow:var(--sombra)}
+.mochila h3{margin-bottom:6px}
+.prog-mochila{height:12px;background:#e3edf6;border-radius:10px;margin:16px 0 22px;overflow:hidden}
+#barraMochila{height:100%;width:0;background:linear-gradient(90deg,var(--ambar),var(--verde));transition:width .4s}
+.items{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.items label{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--gris);cursor:pointer;font-size:.92rem;transition:.2s}
+.items label:hover{background:#e1f5fe}
+.items input{accent-color:var(--verde);width:18px;height:18px}
+
+/* ===== TABLAS ===== */
+.tabla-cont{overflow-x:auto;border-radius:16px;box-shadow:var(--sombra)}
+table{width:100%;border-collapse:collapse;background:#fff;min-width:640px}
+th{background:var(--azul-profundo);color:#fff;font-family:'Montserrat';font-size:.85rem;padding:14px;text-align:left}
+td{padding:13px 14px;border-bottom:1px solid #e6edf4;font-size:.9rem;color:var(--texto-suave)}
+tr:hover td{background:#f4f9fd}
+.gantt{display:inline-block;width:18px;height:18px;border-radius:5px;background:var(--agua)}
+.gantt.v{background:var(--verde)}.gantt.a{background:var(--ambar)}
+
+/* ===== ODS ===== */
+.ods{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.ods-item{border-radius:16px;padding:24px;color:#fff;transition:transform .3s}
+.ods-item:hover{transform:rotate(-1.5deg) scale(1.04)}
+.ods-item b{font-family:'Montserrat';font-size:2rem;display:block}
+.o3{background:#4c9f38}.o6{background:#26bde2}.o11{background:#fd9d24}.o13{background:#3f7e44}
+
+/* ===== EMERGENCIA ===== */
+.emergencia{background:linear-gradient(135deg,var(--rojo),#b71c1c);color:#fff;border-radius:24px;padding:44px;text-align:center;position:relative;overflow:hidden}
+.emergencia::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.08);top:-100px;right:-80px}
+.num-911{font-family:'Montserrat';font-size:clamp(3.5rem,10vw,6rem);font-weight:900;letter-spacing:4px;animation:latido 1.4s infinite}
+@keyframes latido{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}}
+
+/* ===== QUIZ ===== */
+.quiz{max-width:720px;margin:auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:34px}
+.quiz h3{margin-bottom:18px;font-size:1.2rem}
+.opciones{display:grid;gap:10px}
+.opcion{background:rgba(255,255,255,.08);border:2px solid transparent;color:#fff;text-align:left;padding:14px 18px;border-radius:12px;cursor:pointer;font-size:.95rem;transition:.2s;font-family:inherit}
+.opcion:hover{border-color:var(--agua)}
+.opcion.correcta{background:rgba(0,166,90,.35);border-color:var(--verde)}
+.opcion.incorrecta{background:rgba(229,57,53,.35);border-color:var(--rojo)}
+#explicacion{margin-top:16px;color:#c3d6e8;min-height:24px}
+.quiz-pie{display:flex;justify-content:space-between;align-items:center;margin-top:20px;flex-wrap:wrap;gap:10px}
+
+/* ===== FUENTES / FOOTER ===== */
+.fuentes{columns:2 320px;column-gap:30px}
+.fuentes li{break-inside:avoid;margin-bottom:12px;font-size:.88rem;color:var(--texto-suave)}
+footer{background:var(--azul-noche);color:#9fb6cc;padding:50px 0 30px;text-align:center}
+footer h3{color:#fff;margin-bottom:8px}
+.integrantes{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:20px 0}
+.integrantes span{background:rgba(255,255,255,.07);padding:8px 18px;border-radius:20px;font-size:.88rem}
+#arriba{position:fixed;bottom:24px;right:24px;width:50px;height:50px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--agua),var(--azul));color:#fff;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 20px rgba(21,101,192,.4);opacity:0;pointer-events:none;transition:.3s;z-index:999}
+#arriba.ver{opacity:1;pointer-events:auto}
+
+/* ===== RESPONSIVO ===== */
+@media(max-width:900px){
+  .menu{position:fixed;top:0;right:-100%;height:100vh;width:260px;flex-direction:column;background:var(--azul-noche);padding:80px 20px;transition:right .4s;box-shadow:-10px 0 30px rgba(0,0,0,.3)}
+  .menu.abierto{right:0}
+  .hamburguesa{display:block;z-index:1002}
+  .dos-col,.simulador{grid-template-columns:1fr}
+  .timeline::before{left:12px}
+  .evento,.evento:nth-child(even){width:100%;left:0;padding:0 0 30px 44px;text-align:left}
+  .evento:nth-child(odd){text-align:left}
+  .evento:nth-child(odd)::after,.evento:nth-child(even)::after{left:2px;right:auto}
+  .acc-cont-int{padding:0 22px 22px}
+  .simulador{padding:24px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.revelar{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="progreso"></div>
+
+<!-- ================= NAVEGACIÓN ================= -->
+<nav id="nav">
+  <div class="contenedor nav-int">
+    <a href="#inicio" class="logo"><div class="gota"></div> Juárez Bajo la Lluvia</a>
+    <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    <ul class="menu" id="menu">
+      <li><a href="#proyecto">Proyecto</a></li>
+      <li><a href="#contexto">Contexto</a></li>
+      <li><a href="#zonas">Zonas</a></li>
+      <li><a href="#salud">Salud</a></li>
+      <li><a href="#agua">Agua</a></li>
+      <li><a href="#propuesta">Propuesta</a></li>
+      <li><a href="#prevencion">Prevención</a></li>
+      <li><a href="#fuentes">Fuentes</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="inicio">
+  <canvas id="lluvia"></canvas>
+  <div class="relampago"></div>
+  <div class="contenedor hero-cont">
+    <div class="etiqueta"><span class="pulso"></span> UTCJ · TSU en Paramédico · Actividad TR05 Competitividad</div>
+    <h1>Lluvias, inundaciones y agua en <span>Ciudad Juárez</span></h1>
+    <p>Optimización de la respuesta prehospitalaria y prevención de riesgos sanitarios por inundaciones pluviales. Una propuesta de mejora sustentable y competitiva desde la mirada del paramédico.</p>
+    <div class="botones">
+      <a href="#propuesta" class="btn btn-pri">Ver la propuesta ➜</a>
+      <a href="#simulador" class="btn btn-sec">Simulador de inundación</a>
+    </div>
+  </div>
+  <div class="olas"><div class="ola ola3"></div><div class="ola ola2"></div><div class="ola ola1"></div></div>
+  <div class="scroll-ind">Desliza<div class="raton"></div></div>
+</header>
+
+<!-- ================= 1. PROYECTO ================= -->
+<section class="sec-blanca" id="proyecto">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">01 · IDENTIFICACIÓN</span>
+      <h2>Ficha del proyecto</h2>
+      <p>Carta descriptiva de actividad: Competitividad (TR05). Propuesta de mejora sustentable y competitiva.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="ficha">
+      <div class="ficha-item revelar"><small>Nombre del proyecto</small><strong>Optimización de la Respuesta Prehospitalaria y Prevención de Riesgos Sanitarios por Inundaciones Pluviales en Ciudad Juárez</strong></div>
+      <div class="ficha-item revelar retraso-1"><small>Institución</small><strong>Universidad Tecnológica de Ciudad Juárez (UTCJ)</strong></div>
+      <div class="ficha-item revelar retraso-2"><small>Especialidad</small><strong>Técnico Superior Universitario (TSU) en Paramédico</strong></div>
+      <div class="ficha-item revelar retraso-3"><small>Ubicación</small><strong>Ciudad Juárez, Chihuahua, México</strong></div>
+      <div class="ficha-item revelar retraso-1"><small>Población beneficiada</small><strong>Comunidad urbana y periférica, personal prehospitalario, Cruz Roja, Protección Civil y familias en zonas de alto riesgo</strong></div>
+      <div class="ficha-item revelar retraso-2"><small>Formato</small><strong>TR05 (identificación de problemática) + formato libre (proyecto de mejora)</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CIFRAS ================= -->
+<section class="sec-oscura">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">EN NÚMEROS</span>
+      <h2>Lo que dejaron las últimas temporadas de lluvia</h2>
+      <p>Datos reportados por autoridades y medios locales durante 2025 y 2026.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="cifras">
+      <div class="cifra revelar"><div class="valor" data-meta="62">0</div><span class="unidad">mm en 24 h</span><p>Lluvia del 23 de septiembre de 2026, considerada por la JMAS la más intensa en más de 50 años.</p><span class="fuente">Fuente: JMAS / Tiempo.com.mx</span></div>
+      <div class="cifra revelar retraso-1"><div class="valor" data-meta="20">0</div><span class="unidad">pozos afectados</span><p>Pozos de agua potable que salieron de operación por esa misma tormenta.</p><span class="fuente">Fuente: JMAS / Tiempo.com.mx</span></div>
+      <div class="cifra revelar retraso-2"><div class="valor" data-meta="38">0</div><span class="unidad">viviendas dañadas</span><p>Por la tormenta del 26 de junio de 2025 en el poniente; se activó el Plan DN-III.</p><span class="fuente">Fuente: Protección Civil / Meteored</span></div>
+      <div class="cifra revelar retraso-3"><div class="valor" data-meta="36">0</div><span class="unidad">auxilios</span><p>Rescates y apoyos de Policía Municipal en una sola noche de lluvia (agosto 2026).</p><span class="fuente">Fuente: SSPM / Tiempo.com.mx</span></div>
+      <div class="cifra revelar retraso-1"><div class="valor" data-meta="300">0</div><span class="unidad">litros/día</span><p>Consumo promedio de agua por habitante en Juárez según la JMAS (julio 2026).</p><span class="fuente">Fuente: JMAS / N+</span></div>
+      <div class="cifra revelar retraso-2"><div class="valor" data-meta="2016">0</div><span class="unidad">último Atlas de Riesgo</span><p>El Atlas de Riesgo municipal usa datos de 2006 a 2015; legisladores han pedido actualizarlo.</p><span class="fuente">Fuente: H. Congreso de Chihuahua</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. CONTEXTO ================= -->
+<section class="sec-blanca" id="contexto">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">02 · CONTEXTO</span>
+      <h2>¿Por qué se inunda una ciudad del desierto?</h2>
+      <div class="linea"></div>
+    </div>
+    <div class="dos-col">
+      <div class="texto-largo revelar">
+        <p>Ciudad Juárez tiene clima <strong>desértico</strong>: llueve poco en el año (alrededor de 250 mm anuales), pero la lluvia llega concentrada en <strong>tormentas cortas e intensas de verano (julio–septiembre)</strong>, asociadas al monzón de Norteamérica, y en algunos años se extienden hasta octubre.</p>
+        <p>El problema no es solo cuánta agua cae, sino <strong>qué tan rápido cae y hacia dónde escurre</strong>. Los escurrimientos nacen en la <strong>Sierra de Juárez</strong>, bajan por el poniente y atraviesan la mancha urbana. Muchos <strong>arroyos naturales se convirtieron en calles</strong>, y los asentamientos ocuparon sus cauces y laderas.</p>
+        <p>A esto se suman el <strong>suelo poco permeable</strong> y el pavimento, que impiden que el agua se infiltre; un <strong>sistema pluvial insuficiente</strong> y con tramos que fallan durante las tormentas; <strong>basura que tapa alcantarillas</strong>; y una red de <strong>diques y vasos de captación</strong> que, según investigaciones periodísticas, lleva años sin mantenimiento suficiente.</p>
+        <p>Resultado: en minutos, avenidas principales se transforman en ríos con corriente capaz de arrastrar vehículos, las ambulancias quedan atrapadas y el agua de lluvia se mezcla con aguas negras.</p>
+      </div>
+      <div class="ciclo revelar retraso-2">
+        <svg viewBox="0 0 400 400" aria-label="Diagrama del escurrimiento desde la sierra hacia la ciudad">
+          <g class="nube"><ellipse cx="110" cy="70" rx="60" ry="28" fill="#90a4ae"/><ellipse cx="150" cy="55" rx="45" ry="30" fill="#78909c"/><ellipse cx="80" cy="60" rx="35" ry="22" fill="#90a4ae"/></g>
+          <g fill="#29b6f6"><rect class="gota-cae" x="90" y="100" width="3" height="12" rx="2"/><rect class="gota-cae" x="115" y="100" width="3" height="12" rx="2"/><rect class="gota-cae" x="140" y="100" width="3" height="12" rx="2"/><rect class="gota-cae" x="165" y="100" width="3" height="12" rx="2"/></g>
+          <path d="M0 260 L60 150 L120 210 L170 140 L240 260 Z" fill="#8d6e63"/>
+          <text x="60" y="245" fill="#fff" font-size="13" font-weight="700" font-family="Montserrat">Sierra de Juárez</text>
+          <path class="flecha-flujo" d="M150 230 Q220 260 280 290 T390 320" stroke="#0288d1" stroke-width="6" fill="none"/>
+          <rect x="250" y="250" width="30" height="45" fill="#546e7a"/><rect x="290" y="235" width="25" height="60" fill="#607d8b"/><rect x="325" y="255" width="35" height="40" fill="#546e7a"/>
+          <rect x="0" y="295" width="400" height="105" fill="#cfd8dc"/>
+          <rect x="0" y="300" width="400" height="30" fill="#29b6f6" opacity=".6"><animate attributeName="height" values="10;35;10" dur="4s" repeatCount="indefinite"/></rect>
+          <text x="200" y="360" text-anchor="middle" fill="#0b2d4f" font-size="14" font-weight="800" font-family="Montserrat">Ciudad: suelo impermeable</text>
+          <text x="200" y="380" text-anchor="middle" fill="#0b2d4f" font-size="12" font-family="Inter">el agua escurre en lugar de infiltrarse</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CRONOLOGÍA ================= -->
+<section class="sec-oscura">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">ACTUALIZACIÓN 2025–2026</span>
+      <h2>Cronología reciente de tormentas</h2>
+      <p>Eventos documentados que muestran que el problema es recurrente cada temporada.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="timeline">
+      <div class="evento revelar"><span class="fecha">26 jun 2025</span><div class="caja"><h4>Tormenta histórica en el poniente</h4><p>Lluvia torrencial poco después de las 18:00 h; reaparecen los arroyos en las calles, al menos 38 viviendas con daños y activación del Plan DN-III.</p></div></div>
+      <div class="evento revelar"><span class="fecha">29 jul 2025</span><div class="caja"><h4>Alerta preventiva en Anapra</h4><p>Protección Civil Estatal alerta por lluvias fuertes, tormentas eléctricas, viento y posible granizo, especialmente en la zona de Anapra.</p></div></div>
+      <div class="evento revelar"><span class="fecha">12–14 oct 2025</span><div class="caja"><h4>Lluvias fuera de temporada</h4><p>Calles inundadas, derrumbes, cortes de energía y encharcamientos severos en varias colonias.</p></div></div>
+      <div class="evento revelar"><span class="fecha">2 ago 2026</span><div class="caja"><h4>Familias varadas</h4><p>La Policía Municipal brinda 36 auxilios a ciudadanos afectados por lluvias nocturnas.</p></div></div>
+      <div class="evento revelar"><span class="fecha">9–10 sep 2026</span><div class="caja"><h4>Corriente arrastra vehículos</h4><p>Tormenta nocturna deja autos varados y uno arrastrado por la corriente en la zona de la Pánfilo Natera.</p></div></div>
+      <div class="evento revelar"><span class="fecha">14 sep 2026</span><div class="caja"><h4>Vialidades bajo el agua</h4><p>Lluvia fuerte iniciada en la zona de Ciudad Universitaria; saldo blanco, pero con varias vialidades inundadas.</p></div></div>
+      <div class="evento revelar"><span class="fecha">23 sep 2026</span><div class="caja"><h4>La lluvia más intensa en medio siglo</h4><p>62 mm en 24 horas según la JMAS; tramos del sistema pluvial fuera de servicio, 20 pozos afectados y riesgo de hundimientos. Juárez concentró la mayoría de llamadas al 9-1-1 del estado.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. ZONAS ================= -->
+<section id="zonas">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">03 · ZONAS DE RIESGO</span>
+      <h2>¿Dónde se inunda Juárez?</h2>
+      <p>Puntos críticos identificados en la carta descriptiva, reportes de Protección Civil y el Atlas de Riesgos municipal. Filtra por tipo.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="filtros">
+      <button class="filtro activo" data-f="todas">Todas</button>
+      <button class="filtro" data-f="avenida">Avenidas</button>
+      <button class="filtro" data-f="colonia">Colonias</button>
+    </div>
+    <div class="zonas">
+      <div class="zona" data-t="avenida"><span class="nivel alto"></span><div><span class="tipo">Avenida</span><h4>Av. Tecnológico</h4><p>Encharcamientos severos que detienen el tráfico; ruta clave hacia hospitales.</p></div></div>
+      <div class="zona" data-t="avenida"><span class="nivel alto"></span><div><span class="tipo">Avenida</span><h4>Eje Vial Juan Gabriel</h4><p>Acumulación rápida de agua en pasos a desnivel y carriles centrales.</p></div></div>
+      <div class="zona" data-t="avenida"><span class="nivel alto"></span><div><span class="tipo">Avenida</span><h4>Paseo Triunfo de la República</h4><p>Inundaciones recurrentes en cruces principales.</p></div></div>
+      <div class="zona" data-t="avenida"><span class="nivel alto"></span><div><span class="tipo">Avenida</span><h4>Zona Pánfilo Natera</h4><p>Corrientes fuertes que han arrastrado vehículos (sept. 2026).</p></div></div>
+      <div class="zona" data-t="avenida"><span class="nivel medio"></span><div><span class="tipo">Zona</span><h4>Pronaf (zona baja)</h4><p>Históricamente acumula agua en cada tormenta fuerte.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel alto"></span><div><span class="tipo">Colonia</span><h4>Anapra</h4><p>Periferia norponiente; zona de alertas por lluvias, viento y granizo.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel alto"></span><div><span class="tipo">Colonia</span><h4>Riberas del Bravo</h4><p>Suroriente; zona baja con drenaje insuficiente y estancamiento prolongado.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel alto"></span><div><span class="tipo">Colonia</span><h4>Praderas del Valle</h4><p>Encharcamientos que dificultan el acceso de ambulancias.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel alto"></span><div><span class="tipo">Colonia</span><h4>Granjas de Chapultepec</h4><p>Afectaciones y arrastre de agua reportados por Protección Civil.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel alto"></span><div><span class="tipo">Colonia</span><h4>Pancho Villa · División del Norte</h4><p>Arrastre de agua y problemas de movilidad durante tormentas.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel medio"></span><div><span class="tipo">Colonia</span><h4>El Barreal · Felipe Ángeles</h4><p>Poniente; zonas afectadas por desbordamiento de diques según el Atlas de Riesgos.</p></div></div>
+      <div class="zona" data-t="colonia"><span class="nivel medio"></span><div><span class="tipo">Colonia</span><h4>La Cuesta · Lomas de San José · Infonavit Casas Grandes</h4><p>Escurrimientos desde la sierra hacia el poniente.</p></div></div>
+    </div>
+    <div class="leyenda"><span><i class="nivel alto"></i> Riesgo alto / recurrente</span><span><i class="nivel medio"></i> Riesgo medio / histórico</span></div>
+  </div>
+</section>
+
+<!-- ================= 4. PROBLEMÁTICA ================= -->
+<section class="sec-blanca" id="problematica">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">04 · PROBLEMÁTICA SOCIAL</span>
+      <h2>Lo que ve un paramédico cuando llueve</h2>
+      <p>Desde la perspectiva del TSU Paramédico, las inundaciones generan dos problemas graves que se alimentan entre sí.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="rejilla r2">
+      <div class="tarjeta roja revelar">
+        <div class="icono">🚑</div>
+        <h3>1. Retraso en la atención médica de emergencia</h3>
+        <p>Las ambulancias pierden minutos críticos por tráfico detenido, calles anegadas y riesgo de que la unidad quede varada.</p>
+        <ul>
+          <li>En paro cardiaco, cada minuto sin RCP/desfibrilación reduce drásticamente la supervivencia.</li>
+          <li>Traumas, partos y crisis respiratorias no esperan a que baje el agua.</li>
+          <li>Una ambulancia varada es una unidad menos disponible para toda la ciudad.</li>
+          <li>Riesgo para la tripulación: corriente, electrocución y baja visibilidad.</li>
+        </ul>
+      </div>
+      <div class="tarjeta ambar revelar retraso-2">
+        <div class="icono">🦠</div>
+        <h3>2. Riesgos biológicos y de salud pública</h3>
+        <p>El agua de lluvia estancada y mezclada con aguas negras se vuelve un foco de infección.</p>
+        <ul>
+          <li>Aumento de enfermedades gastrointestinales y dermatológicas.</li>
+          <li>Proliferación de mosquitos (vectores) en charcos y recipientes.</li>
+          <li>Población más afectada: niños, adultos mayores, embarazadas, personas con enfermedades crónicas y familias sin servicios básicos.</li>
+          <li>Daño a pozos y red de agua potable que puede comprometer el suministro.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIMULADOR ================= -->
+<section id="simulador">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">HERRAMIENTA INTERACTIVA</span>
+      <h2>¿Qué tan peligrosa es el agua en la calle?</h2>
+      <p>Mueve el control para subir el nivel del agua en movimiento y ver el riesgo para peatones y vehículos.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="simulador revelar">
+      <div class="escena" id="escena">
+        <svg viewBox="0 0 600 360" role="img" aria-label="Calle con una persona, un automóvil y una ambulancia; el agua sube y fluye con corriente">
+          <defs>
+            <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1d33"/><stop offset="1" stop-color="#2b4f73"/></linearGradient>
+            <linearGradient id="aguaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fc3f7" stop-opacity=".62"/><stop offset=".5" stop-color="#1e88e5" stop-opacity=".72"/><stop offset="1" stop-color="#0d3c78" stop-opacity=".9"/></linearGradient>
+            <linearGradient id="carroGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a65"/><stop offset="1" stop-color="#e64a19"/></linearGradient>
+            <linearGradient id="ambGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3eaf0"/></linearGradient>
+          </defs>
+          <!-- cielo y ciudad -->
+          <rect width="600" height="360" fill="url(#cielo)"/>
+          <path d="M0 300 V230 H40 V200 H85 V240 H120 V180 H170 V225 H210 V160 H255 V215 H300 V190 H350 V235 H390 V170 H440 V220 H480 V195 H530 V240 H600 V300Z" fill="#132a44"/>
+          <g fill="#ffd54f" opacity=".35"><rect x="130" y="192" width="8" height="8"/><rect x="150" y="192" width="8" height="8"/><rect x="220" y="175" width="8" height="8"/><rect x="236" y="195" width="8" height="8"/><rect x="400" y="185" width="8" height="8"/><rect x="420" y="200" width="8" height="8"/><rect x="495" y="208" width="8" height="8"/></g>
+          <g id="lluviaEsc" stroke="#b3e5fc" stroke-width="1.3" stroke-linecap="round" opacity=".45"></g>
+          <!-- banqueta y calle -->
+          <rect y="294" width="600" height="8" fill="#5f6f7c"/>
+          <rect y="300" width="600" height="60" fill="#2f3b46"/>
+          <g fill="#f5f5f5" opacity=".7"><rect x="20" y="328" width="45" height="5" rx="2"/><rect x="120" y="328" width="45" height="5" rx="2"/><rect x="220" y="328" width="45" height="5" rx="2"/><rect x="320" y="328" width="45" height="5" rx="2"/><rect x="420" y="328" width="45" height="5" rx="2"/><rect x="520" y="328" width="45" height="5" rx="2"/></g>
+          <!-- regla de profundidad (1 cm = 0.8 px) -->
+          <g font-family="Montserrat,sans-serif" font-size="9" font-weight="700" fill="#e3f2fd">
+            <rect x="20" y="214" width="5" height="86" fill="#eceff1" rx="2"/>
+            <g stroke="#ffca28" stroke-width="2"><line x1="18" y1="288" x2="30" y2="288"/><line x1="18" y1="276" x2="30" y2="276"/><line x1="18" y1="252" x2="30" y2="252"/><line x1="18" y1="236" x2="30" y2="236"/></g>
+            <text x="16" y="291" text-anchor="end">15</text><text x="16" y="279" text-anchor="end">30</text><text x="16" y="255" text-anchor="end">60</text><text x="16" y="239" text-anchor="end">80</text>
+            <text x="22" y="208" text-anchor="middle">cm</text>
+          </g>
+          <!-- persona con impermeable (≈170 cm) -->
+          <g id="gPersona">
+            <rect x="55" y="252" width="8" height="42" rx="3" fill="#37474f"/><rect x="66" y="252" width="8" height="42" rx="3" fill="#37474f"/>
+            <rect x="52" y="290" width="12" height="10" rx="3" fill="#1b2a35"/><rect x="65" y="290" width="12" height="10" rx="3" fill="#1b2a35"/>
+            <path d="M50 196 Q64 186 78 196 L84 260 Q64 266 44 260 Z" fill="#ffca28"/>
+            <rect x="42" y="200" width="9" height="44" rx="4" fill="#ffb300" transform="rotate(8 46 200)"/>
+            <rect x="77" y="200" width="9" height="44" rx="4" fill="#ffb300" transform="rotate(-8 82 200)"/>
+            <circle cx="64" cy="180" r="12" fill="#d7a77a"/>
+            <path d="M50 182 Q50 162 64 162 Q78 162 78 182 L74 182 Q73 170 64 170 Q55 170 54 182 Z" fill="#ffb300"/>
+            <line x1="64" y1="198" x2="64" y2="258" stroke="#f9a825" stroke-width="1.5"/>
+          </g>
+          <!-- automóvil (≈145 cm) -->
+          <g id="gAuto">
+            <path d="M104 268 Q104 250 124 247 L156 243 L182 213 Q190 205 204 205 L250 205 Q264 205 272 215 L292 243 Q305 247 305 262 L305 280 Q305 288 297 288 L112 288 Q104 288 104 280 Z" fill="url(#carroGrad)"/>
+            <path d="M190 217 Q195 212 204 212 L226 212 L226 243 L166 243 Z" fill="#cfe8f5" opacity=".9"/>
+            <path d="M232 212 L250 212 Q259 212 264 219 L282 243 L232 243 Z" fill="#cfe8f5" opacity=".9"/>
+            <line x1="229" y1="246" x2="229" y2="284" stroke="#bf360c" stroke-width="1.5"/>
+            <rect x="210" y="254" width="12" height="3" rx="1.5" fill="#bf360c"/><rect x="242" y="254" width="12" height="3" rx="1.5" fill="#bf360c"/>
+            <rect x="296" y="256" width="9" height="7" rx="2" fill="#fff59d"/><rect x="104" y="256" width="7" height="7" rx="2" fill="#ff1744"/>
+            <circle cx="148" cy="282" r="18" fill="#1c1c1c"/><circle cx="148" cy="282" r="8" fill="#b0bec5"/>
+            <circle cx="262" cy="282" r="18" fill="#1c1c1c"/><circle cx="262" cy="282" r="8" fill="#b0bec5"/>
+          </g>
+          <!-- ambulancia (≈260 cm) -->
+          <g id="gAmb">
+            <rect x="338" y="104" width="166" height="174" rx="10" fill="url(#ambGrad)"/>
+            <path d="M500 146 L546 146 Q557 146 563 158 L578 204 L578 270 Q578 278 570 278 L500 278 Z" fill="url(#ambGrad)"/>
+            <path d="M508 156 L541 156 Q549 156 553 165 L564 200 L508 200 Z" fill="#cfe8f5"/>
+            <rect x="338" y="208" width="240" height="14" fill="#e53935"/>
+            <rect x="338" y="226" width="240" height="4" fill="#1e88e5"/>
+            <g fill="#e53935"><rect x="408" y="132" width="16" height="44" rx="2"/><rect x="394" y="146" width="44" height="16" rx="2"/></g>
+            <text x="420" y="198" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="900" font-size="15" fill="#c62828" letter-spacing="1">AMBULANCIA</text>
+            <rect id="luzRoja" x="352" y="94" width="34" height="11" rx="4" fill="#ff1744"/>
+            <rect id="luzAzul" x="388" y="94" width="34" height="11" rx="4" fill="#2979ff"/>
+            <rect x="565" y="236" width="10" height="8" rx="2" fill="#fff59d"/>
+            <circle cx="382" cy="280" r="20" fill="#1c1c1c"/><circle cx="382" cy="280" r="9" fill="#b0bec5"/>
+            <circle cx="536" cy="280" r="20" fill="#1c1c1c"/><circle cx="536" cy="280" r="9" fill="#b0bec5"/>
+          </g>
+          <!-- agua con corriente (se dibuja encima para cubrir lo sumergido) -->
+          <g id="aguaG" opacity="0">
+            <g id="olaAtras"><path d="M-300 297 Q-262 291 -225 297 T-150 297 T-75 297 T0 297 T75 297 T150 297 T225 297 T300 297 T375 297 T450 297 T525 297 T600 297 T675 297 T750 297 T825 297 T900 297 V420 H-300Z" fill="#81d4fa" opacity=".35"/></g>
+            <g id="olaFrente"><path d="M-300 300 Q-262 295 -225 300 T-150 300 T-75 300 T0 300 T75 300 T150 300 T225 300 T300 300 T375 300 T450 300 T525 300 T600 300 T675 300 T750 300 T825 300 T900 300 V420 H-300Z" fill="url(#aguaGrad)"/>
+              <path d="M-300 300 Q-262 295 -225 300 T-150 300 T-75 300 T0 300 T75 300 T150 300 T225 300 T300 300 T375 300 T450 300 T525 300 T600 300 T675 300 T750 300 T825 300 T900 300" fill="none" stroke="#e1f5fe" stroke-width="2" opacity=".8"/></g>
+            <g id="chorros" stroke="#ffffff" stroke-linecap="round"></g>
+            <g id="basura"></g>
+          </g>
+          <text id="flecha" x="590" y="352" text-anchor="end" font-family="Montserrat,sans-serif" font-size="11" font-weight="800" fill="#e1f5fe" opacity="0">CORRIENTE ➜</text>
+        </svg>
+        <span class="nota-escala">Escala aproximada</span>
+      </div>
+      <div class="control">
+        <label for="rango">Nivel de agua en movimiento</label>
+        <input type="range" id="rango" min="0" max="80" value="0" step="5">
+        <div class="lectura"><span id="cm">0</span> cm</div>
+        <div id="mensajeRiesgo" class="r-bajo">Sin agua: circulación normal. Mantente atento a los avisos de Protección Civil.</div>
+        <p class="lema">"Si está inundado, ¡date la vuelta!" Nunca cruces calles o arroyos con corriente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. SALUD ================= -->
+<section class="sec-blanca" id="salud">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">05 · RIESGOS SANITARIOS</span>
+      <h2>Enfermedades y lesiones asociadas a inundaciones</h2>
+      <p>Lo que el personal prehospitalario debe reconocer, atender y prevenir durante y después de una tormenta.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="rejilla r3">
+      <div class="tarjeta revelar"><div class="icono">🤢</div><h3>Gastrointestinales</h3><p>Diarrea, vómito y deshidratación por agua o alimentos contaminados (E. coli, Salmonella, Shigella, hepatitis A).</p><ul><li>Vigilar deshidratación en niños y adultos mayores.</li><li>Promover vida suero oral y agua hervida o clorada.</li></ul></div>
+      <div class="tarjeta revelar retraso-1"><div class="icono">🩹</div><h3>Dermatológicas y heridas</h3><p>Dermatitis, hongos e infección de heridas por contacto prolongado con agua sucia.</p><ul><li>Lavar y cubrir heridas; valorar esquema antitetánico.</li><li>Secar bien pies y pliegues.</li></ul></div>
+      <div class="tarjeta revelar retraso-2"><div class="icono">🐀</div><h3>Leptospirosis</h3><p>Bacteria presente en orina de roedores que contamina el agua de inundación; entra por heridas o mucosas.</p><ul><li>Sospechar ante fiebre, dolor muscular (pantorrillas) y ojos rojos días después.</li><li>Uso de botas y guantes.</li></ul></div>
+      <div class="tarjeta revelar"><div class="icono">🦟</div><h3>Enfermedades por vectores</h3><p>Charcos y recipientes con agua favorecen mosquitos <em>Aedes</em> (dengue) y <em>Culex</em> (virus del Nilo Occidental, presente en la región fronteriza).</p><ul><li>Descacharrizar: voltear, tapar, tirar y limpiar recipientes.</li><li>Repelente y mosquiteros.</li></ul></div>
+      <div class="tarjeta roja revelar retraso-1"><div class="icono">⚡</div><h3>Electrocución</h3><p>Postes y cables caídos, cortos circuitos y agua en contacto con instalaciones eléctricas.</p><ul><li>Asegurar la escena antes de acercarse.</li><li>Coordinar corte de energía con CFE/Bomberos.</li></ul></div>
+      <div class="tarjeta roja revelar retraso-2"><div class="icono">🌊</div><h3>Ahogamiento y trauma</h3><p>Arrastre por corriente, caídas en alcantarillas abiertas, choques y derrumbes de bardas.</p><ul><li>Rescate acuático solo por personal capacitado.</li><li>Manejo de vía aérea y prevención de hipotermia.</li></ul></div>
+      <div class="tarjeta ambar revelar"><div class="icono">🥶</div><h3>Hipotermia</h3><p>Ropa mojada, viento y descenso de temperatura nocturna en el desierto.</p><ul><li>Retirar ropa húmeda y abrigar.</li><li>Prioridad en adultos mayores y lactantes.</li></ul></div>
+      <div class="tarjeta ambar revelar retraso-1"><div class="icono">💊</div><h3>Descompensación de crónicos</h3><p>Pacientes con diabetes, hipertensión, diálisis u oxígeno domiciliario que no pueden salir o pierden la energía eléctrica.</p><ul><li>Censo de pacientes dependientes de equipo eléctrico.</li><li>Plan de traslado anticipado.</li></ul></div>
+      <div class="tarjeta verde revelar retraso-2"><div class="icono">🧠</div><h3>Salud mental</h3><p>Ansiedad, estrés y crisis tras perder vivienda o bienes.</p><ul><li>Primeros auxilios psicológicos.</li><li>Canalización a servicios de apoyo.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. AGUA POTABLE ================= -->
+<section id="agua">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">06 · EL AGUA DE JUÁREZ</span>
+      <h2>La paradoja: inundaciones en una ciudad con escasez de agua</h2>
+      <p>Mientras la lluvia inunda las calles, el agua potable de la ciudad depende de acuíferos subterráneos bajo presión.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="dos-col">
+      <div class="texto-largo revelar">
+        <p>Ciudad Juárez se abastece de <strong>dos acuíferos compartidos con Estados Unidos</strong>: el <strong>Bolsón del Hueco</strong> (con El Paso, Texas) y el <strong>Bolsón de la Mesilla</strong> (Conejos–Médanos, compartido con Nuevo México y Texas). El poniente de la ciudad no tiene pozos propios y recibe el agua por <strong>acueducto</strong>.</p>
+        <p>CONAGUA clasifica al Bolsón del Hueco como <strong>sobreexplotado</strong> y con veda por tiempo indefinido; estudios académicos documentan descensos de sus niveles y problemas de salinización.</p>
+        <p>Las tormentas también golpean el abasto: la del 23 de septiembre de 2026 dejó <strong>20 pozos fuera de servicio</strong>. Además, el agua de lluvia que corre por las calles <strong>no se aprovecha</strong>: se pierde, arrastra contaminantes y causa daños.</p>
+        <div class="cita">Idea clave del proyecto: el agua de lluvia debe dejar de verse solo como amenaza y empezar a gestionarse como recurso.</div>
+      </div>
+      <div class="revelar retraso-2">
+        <div class="tarjeta">
+          <h3>Indicadores del agua en Juárez</h3>
+          <div class="barra-cont"><div class="barra-et"><span>Dependencia de agua subterránea</span><span>≈100%</span></div><div class="barra"><div data-ancho="100"></div></div></div>
+          <div class="barra-cont"><div class="barra-et"><span>Consumo por habitante (300 L/día vs. ~100 L recomendados por la OMS para necesidades básicas)</span><span>300 L</span></div><div class="barra"><div class="rojo" data-ancho="100"></div></div></div>
+          <div class="barra-cont"><div class="barra-et"><span>Referencia OMS</span><span>~100 L</span></div><div class="barra"><div data-ancho="33"></div></div></div>
+          <div class="barra-cont"><div class="barra-et"><span>Lluvia anual aproximada</span><span>~250 mm</span></div><div class="barra"><div data-ancho="25"></div></div></div>
+          <p style="margin-top:14px;font-size:.85rem">Un techo de 100 m² puede captar cerca de <strong>20,000 litros al año</strong> con ~250 mm de lluvia (descontando pérdidas), agua útil para riego, limpieza o sanitarios.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. PROPUESTA ================= -->
+<section class="sec-oscura" id="propuesta">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">07 · PROPUESTA DE SOLUCIÓN</span>
+      <h2>Proyecto de mejora sustentable desde la carrera de Paramédico</h2>
+      <p>Cinco ejes que combinan tecnología, prevención, capacitación y sustentabilidad. Da clic en cada uno.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="acordeon">
+      <div class="acc-item revelar">
+        <button class="acc-btn"><span class="letra">A</span>Sistema de Ruteo Estratégico y Alertas Tácticas para Ambulancias<span class="mas">+</span></button>
+        <div class="acc-cont"><div class="acc-cont-int">
+          <ul>
+            <li><strong>Mapeo de zonas de riesgo en tiempo real:</strong> mapa digital (Google My Maps, QGIS o similar) con puntos de inundación recurrente, alimentado por reportes de Protección Civil, 9-1-1, JMAS y de las propias tripulaciones.</li>
+            <li><strong>Rutas alternas pre-trazadas</strong> hacia los principales hospitales (Hospital General, IMSS, Hospital de la Mujer, Hospital Infantil, Cruz Roja) que eviten avenidas inundables.</li>
+            <li><strong>Semáforo de vialidades</strong> (verde / amarillo / rojo) comunicado por radio y grupo de mensajería a las unidades al activarse una alerta meteorológica.</li>
+            <li><strong>Pre-posicionamiento de ambulancias</strong> en puntos estratégicos (ambos lados de los cruces críticos) antes de que inicie la tormenta, para no tener que atravesar zonas anegadas.</li>
+            <li><strong>Regla operativa:</strong> ninguna unidad cruza agua en movimiento ni de profundidad desconocida.</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="acc-item revelar">
+        <button class="acc-btn"><span class="letra">B</span>Brigadas Comunitarias de Primera Respuesta<span class="mas">+</span></button>
+        <div class="acc-cont"><div class="acc-cont-int">
+          <ul>
+            <li>Capacitar a vecinos de colonias de alto riesgo (Anapra, Riberas del Bravo, Praderas del Valle, entre otras) en <strong>primeros auxilios, RCP básica y control de hemorragias</strong>.</li>
+            <li>Formar "vecinos enlace" que reporten al 9-1-1 con datos precisos: ubicación, número de lesionados y nivel del agua.</li>
+            <li>Censo de personas vulnerables por manzana: adultos mayores, personas con discapacidad, embarazadas, pacientes con oxígeno o diálisis.</li>
+            <li>Botiquines comunitarios y puntos de reunión seguros en zonas altas.</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="acc-item revelar">
+        <button class="acc-btn"><span class="letra">C</span>Vigilancia y Prevención Sanitaria Post-Inundación<span class="mas">+</span></button>
+        <div class="acc-cont"><div class="acc-cont-int">
+          <ul>
+            <li>Jornadas de <strong>descacharrización</strong> y eliminación de criaderos de mosquitos 48–72 horas después de cada tormenta.</li>
+            <li>Distribución de <strong>vida suero oral</strong>, gotas de plata o cloro y guías para potabilizar el agua.</li>
+            <li>Registro de casos de diarrea, infecciones de piel y fiebre en las zonas afectadas para detectar brotes a tiempo, en coordinación con la Jurisdicción Sanitaria.</li>
+            <li>Campañas de vacunación antitetánica y de higiene de manos.</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="acc-item revelar">
+        <button class="acc-btn"><span class="letra">D</span>Capacitación Especializada del Personal Prehospitalario<span class="mas">+</span></button>
+        <div class="acc-cont"><div class="acc-cont-int">
+          <ul>
+            <li>Curso de <strong>seguridad en escena con agua</strong>: rescate desde orilla (alcanzar, lanzar, remar; nunca entrar sin equipo).</li>
+            <li>Manejo de <strong>ahogamiento, hipotermia y electrocución</strong>.</li>
+            <li>Uso de equipo de protección: botas, guantes, chaleco salvavidas y casco.</li>
+            <li>Simulacros anuales antes de la temporada de lluvias (mayo–junio), en coordinación con Protección Civil, Bomberos y Cruz Roja.</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="acc-item revelar">
+        <button class="acc-btn"><span class="letra">E</span>Gestión Sustentable del Agua de Lluvia<span class="mas">+</span></button>
+        <div class="acc-cont"><div class="acc-cont-int">
+          <ul>
+            <li><strong>Captación de agua pluvial</strong> en techos de escuelas, centros comunitarios y la propia UTCJ, para riego y limpieza.</li>
+            <li><strong>Jardines de lluvia y zanjas de infiltración</strong> con plantas nativas del desierto que absorben escurrimientos.</li>
+            <li>Promover <strong>pavimentos permeables</strong> y estacionamientos con áreas verdes.</li>
+            <li>Campañas para <strong>no tirar basura</strong> en calles y alcantarillas, y limpieza de bocas de tormenta antes de la temporada.</li>
+            <li>Gestión ante autoridades para el mantenimiento de <strong>diques y vasos de captación</strong> y la <strong>actualización del Atlas de Riesgos</strong>.</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. PROTOCOLO ================= -->
+<section>
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">08 · PROTOCOLO</span>
+      <h2>Protocolo prehospitalario en inundación</h2>
+      <p>Secuencia de actuación propuesta para tripulaciones de ambulancia durante una contingencia pluvial.</p>
+      <div class="linea"></div>
+    </div>
+    <div class="pasos">
+      <div class="paso revelar"><h4>Alerta temprana</h4><p>Al emitirse aviso de tormenta, la central activa el semáforo de vialidades y pre-posiciona unidades.</p></div>
+      <div class="paso revelar retraso-1"><h4>Ruta segura</h4><p>Consultar mapa de riesgo y elegir ruta alterna; nunca cruzar agua en movimiento.</p></div>
+      <div class="paso revelar retraso-2"><h4>Seguridad de la escena</h4><p>Evaluar corriente, cables eléctricos, derrumbes y alcantarillas abiertas antes de acercarse.</p></div>
+      <div class="paso revelar retraso-3"><h4>Triage</h4><p>Clasificar víctimas (START) y priorizar ahogamiento, trauma, hipotermia y pacientes críticos.</p></div>
+      <div class="paso revelar"><h4>Atención y control</h4><p>Vía aérea, ventilación, circulación, control de temperatura y descontaminación básica de heridas.</p></div>
+      <div class="paso revelar retraso-1"><h4>Traslado y reporte</h4><p>Traslado al hospital adecuado y registro del punto de inundación para actualizar el mapa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9. COMPETITIVIDAD ================= -->
+<section class="sec-blanca">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">09 · SUSTENTABILIDAD Y COMPETITIVIDAD</span>
+      <h2>¿Por qué es una propuesta sustentable y competitiva?</h2>
+      <div class="linea"></div>
+    </div>
+    <div class="rejilla r4" style="margin-bottom:50px">
+      <div class="tarjeta verde revelar"><div class="icono">🌱</div><h3>Ambiental</h3><p>Aprovecha el agua de lluvia, reduce escurrimientos contaminados y protege el acuífero.</p></div>
+      <div class="tarjeta revelar retraso-1"><div class="icono">🤝</div><h3>Social</h3><p>Protege a la población vulnerable y fortalece la organización comunitaria.</p></div>
+      <div class="tarjeta ambar revelar retraso-2"><div class="icono">💰</div><h3>Económica</h3><p>Bajo costo: usa herramientas digitales gratuitas y capacitación; evita pérdidas por daños y unidades varadas.</p></div>
+      <div class="tarjeta roja revelar retraso-3"><div class="icono">🏆</div><h3>Competitiva</h3><p>Reduce tiempos de respuesta, mejora la calidad del servicio prehospitalario y es replicable en otras ciudades fronterizas.</p></div>
+    </div>
+    <h3 class="revelar" style="text-align:center;margin-bottom:22px">Alineación con los Objetivos de Desarrollo Sostenible (ONU)</h3>
+    <div class="ods">
+      <div class="ods-item o3 revelar"><b>ODS 3</b>Salud y bienestar</div>
+      <div class="ods-item o6 revelar retraso-1"><b>ODS 6</b>Agua limpia y saneamiento</div>
+      <div class="ods-item o11 revelar retraso-2"><b>ODS 11</b>Ciudades y comunidades sostenibles</div>
+      <div class="ods-item o13 revelar retraso-3"><b>ODS 13</b>Acción por el clima</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. PLAN DE TRABAJO ================= -->
+<section>
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">10 · PLAN DE TRABAJO</span>
+      <h2>Cronograma, indicadores y recursos</h2>
+      <div class="linea"></div>
+    </div>
+    <h3 class="revelar" style="margin-bottom:16px">Cronograma de implementación (12 meses)</h3>
+    <div class="tabla-cont revelar" style="margin-bottom:40px">
+      <table>
+        <thead><tr><th>Actividad</th><th>Ene–Mar</th><th>Abr–Jun</th><th>Jul–Sep</th><th>Oct–Dic</th></tr></thead>
+        <tbody>
+          <tr><td>Diagnóstico y mapeo de zonas de riesgo</td><td><span class="gantt"></span></td><td><span class="gantt"></span></td><td></td><td><span class="gantt"></span></td></tr>
+          <tr><td>Diseño de rutas alternas y semáforo vial</td><td><span class="gantt"></span></td><td><span class="gantt"></span></td><td></td><td></td></tr>
+          <tr><td>Capacitación de personal y brigadas comunitarias</td><td></td><td><span class="gantt v"></span></td><td></td><td><span class="gantt v"></span></td></tr>
+          <tr><td>Simulacro previo a temporada de lluvias</td><td></td><td><span class="gantt a"></span></td><td></td><td></td></tr>
+          <tr><td>Operación en temporada (alertas, ruteo, atención)</td><td></td><td></td><td><span class="gantt a"></span></td><td><span class="gantt a"></span></td></tr>
+          <tr><td>Vigilancia sanitaria post-inundación</td><td></td><td></td><td><span class="gantt v"></span></td><td><span class="gantt v"></span></td></tr>
+          <tr><td>Instalación de captación pluvial piloto</td><td></td><td><span class="gantt v"></span></td><td></td><td></td></tr>
+          <tr><td>Evaluación de resultados y reporte final</td><td></td><td></td><td></td><td><span class="gantt"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rejilla r2">
+      <div class="tarjeta revelar">
+        <div class="icono">📊</div><h3>Indicadores de éxito</h3>
+        <ul>
+          <li>Reducción del tiempo promedio de respuesta en días de lluvia (meta: −20%).</li>
+          <li>Cero ambulancias varadas por inundación en la temporada.</li>
+          <li>Número de vecinos capacitados en primeros auxilios (meta: 150).</li>
+          <li>Puntos de inundación mapeados y actualizados.</li>
+          <li>Casos de enfermedades gastrointestinales y dermatológicas reportados post-tormenta.</li>
+          <li>Litros de agua de lluvia captados en el sistema piloto.</li>
+        </ul>
+      </div>
+      <div class="tarjeta verde revelar retraso-2">
+        <div class="icono">🧰</div><h3>Recursos necesarios (estimado)</h3>
+        <ul>
+          <li><strong>Humanos:</strong> estudiantes y docentes TSU Paramédico, Protección Civil, Cruz Roja.</li>
+          <li><strong>Tecnológicos:</strong> mapas digitales gratuitos, radios, grupo de mensajería, celulares.</li>
+          <li><strong>Materiales:</strong> botiquines comunitarios, equipo de protección (botas, guantes, chalecos), material didáctico.</li>
+          <li><strong>Sustentables:</strong> sistema piloto de captación pluvial (canaletas, filtro, tinaco).</li>
+          <li><strong>Financiamiento posible:</strong> UTCJ, presupuesto participativo municipal, donativos de empresas (responsabilidad social) y convocatorias de gobierno.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11. PREVENCIÓN ================= -->
+<section class="sec-blanca" id="prevencion">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">11 · GUÍA CIUDADANA</span>
+      <h2>¿Qué hacer antes, durante y después de una tormenta?</h2>
+      <div class="linea"></div>
+    </div>
+    <div class="pestanas">
+      <button class="pest activo" data-p="antes">Antes</button>
+      <button class="pest" data-p="durante">Durante</button>
+      <button class="pest" data-p="despues">Después</button>
+    </div>
+    <div class="panel activo" id="antes">
+      <ul class="lista-check">
+        <li>Conoce si tu colonia está en zona de riesgo y ubica las partes altas cercanas.</li>
+        <li>Limpia azoteas, canaletas y la alcantarilla frente a tu casa.</li>
+        <li>No tires basura en la calle: tapa el drenaje pluvial.</li>
+        <li>Prepara tu mochila de emergencia (abajo puedes revisarla).</li>
+        <li>Guarda documentos importantes en bolsas herméticas.</li>
+        <li>Sigue los avisos de Protección Civil y el pronóstico del clima.</li>
+      </ul>
+    </div>
+    <div class="panel" id="durante">
+      <ul class="lista-check">
+        <li>Quédate en un lugar seguro y alto; evita salir si no es necesario.</li>
+        <li>Nunca cruces calles, arroyos o vados con corriente, ni a pie ni en auto.</li>
+        <li>Aléjate de postes, cables caídos y anuncios espectaculares.</li>
+        <li>Si tu vehículo queda rodeado de agua que sube, abandónalo y busca un lugar alto.</li>
+        <li>Desconecta aparatos eléctricos si entra agua a tu casa.</li>
+        <li>En emergencia llama al 9-1-1 con ubicación exacta y número de personas.</li>
+      </ul>
+    </div>
+    <div class="panel" id="despues">
+      <ul class="lista-check">
+        <li>No consumas agua ni alimentos que hayan tenido contacto con la inundación.</li>
+        <li>Hierve el agua al menos 1 minuto o desinféctala con cloro o plata coloidal.</li>
+        <li>Usa botas y guantes para limpiar; lava y desinfecta superficies.</li>
+        <li>Elimina charcos y recipientes con agua para evitar mosquitos.</li>
+        <li>Cura y cubre cualquier herida; acude al médico si hay fiebre, diarrea o infección.</li>
+        <li>Revisa la instalación eléctrica antes de reconectar la energía.</li>
+      </ul>
+    </div>
+
+    <div class="mochila revelar">
+      <h3>🎒 Revisa tu mochila de emergencia</h3>
+      <p style="color:var(--texto-suave);font-size:.92rem">Marca lo que ya tienes: <strong id="contMochila">0</strong> de 12 artículos.</p>
+      <div class="prog-mochila"><div id="barraMochila"></div></div>
+      <div class="items" id="items">
+        <label><input type="checkbox"> Agua embotellada (3 L por persona)</label>
+        <label><input type="checkbox"> Alimentos enlatados o no perecederos</label>
+        <label><input type="checkbox"> Botiquín de primeros auxilios</label>
+        <label><input type="checkbox"> Medicamentos personales</label>
+        <label><input type="checkbox"> Lámpara y pilas de repuesto</label>
+        <label><input type="checkbox"> Radio de pilas</label>
+        <label><input type="checkbox"> Copias de documentos en bolsa</label>
+        <label><input type="checkbox"> Cargador portátil (power bank)</label>
+        <label><input type="checkbox"> Impermeable y ropa seca</label>
+        <label><input type="checkbox"> Silbato</label>
+        <label><input type="checkbox"> Gel antibacterial y cubrebocas</label>
+        <label><input type="checkbox"> Lista de teléfonos de emergencia</label>
+      </div>
+      <p id="msjMochila" style="margin-top:16px;font-weight:700;color:var(--verde)"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="sec-oscura">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">PON A PRUEBA LO APRENDIDO</span>
+      <h2>Mini cuestionario</h2>
+      <div class="linea"></div>
+    </div>
+    <div class="quiz revelar">
+      <p style="color:#80deea;font-weight:700;margin-bottom:8px">Pregunta <span id="qNum">1</span> de <span id="qTotal">5</span></p>
+      <h3 id="qTexto"></h3>
+      <div class="opciones" id="qOpciones"></div>
+      <p id="explicacion"></p>
+      <div class="quiz-pie"><span>Puntaje: <strong id="qPuntos">0</strong></span><button class="btn btn-pri" id="qSig" style="display:none">Siguiente ➜</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EMERGENCIA ================= -->
+<section class="sec-blanca">
+  <div class="contenedor">
+    <div class="emergencia revelar">
+      <p style="font-weight:700;letter-spacing:2px">EN CASO DE EMERGENCIA LLAMA AL</p>
+      <div class="num-911">9-1-1</div>
+      <p style="max-width:600px;margin:10px auto 0">Indica tu ubicación exacta (calle, número, colonia y referencias), qué está pasando, cuántas personas necesitan ayuda y si hay agua en movimiento o cables caídos. No cuelgues hasta que te lo indiquen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FUENTES ================= -->
+<section id="fuentes">
+  <div class="contenedor">
+    <div class="titulo-sec revelar">
+      <span class="num">12 · REFERENCIAS</span>
+      <h2>Fuentes consultadas</h2>
+      <div class="linea"></div>
+    </div>
+    <ul class="fuentes revelar">
+      <li>Tiempo.com.mx (23 sep 2026). <a href="https://www.tiempo.com.mx/local/ciudad-juarez-registro-la-lluvia-mas-intensa-en-mas-de-50-anos-jmas-ciudad-juarez-23-septiembre-2026/" target="_blank" rel="noopener">Ciudad Juárez registró la lluvia más intensa en más de 50 años: JMAS</a>.</li>
+      <li>Tiempo.com.mx (23 sep 2026). <a href="https://www.tiempo.com.mx/local/lluvias-e-inundaciones-afectaron-juarez-jimenez-acumulo-49-mm/" target="_blank" rel="noopener">Lluvias e inundaciones afectaron Juárez</a>.</li>
+      <li>Tiempo.com.mx (14 sep 2026). <a href="https://www.tiempo.com.mx/local/saldo-blanco-tras-lluvias-estas-fueron-las-zonas-mas-inundadas-ciudad-juarez-2026/" target="_blank" rel="noopener">Saldo blanco tras lluvias: zonas más inundadas</a>.</li>
+      <li>Tiempo.com.mx (10 sep 2026). <a href="https://www.tiempo.com.mx/local/asi-arrastro-corriente-a-vehiculo-en-la-panfilo-natera/" target="_blank" rel="noopener">Así arrastró corriente a vehículo en la Pánfilo Natera</a>.</li>
+      <li>Tiempo.com.mx (2 ago 2026). <a href="https://www.tiempo.com.mx/local/ayudaron-policias-a-familias-varadas-en-inundaciones-por-lluvias-ciudad-juarez/" target="_blank" rel="noopener">Ayudaron policías a familias varadas en inundaciones</a>.</li>
+      <li>N+ Chihuahua. <a href="https://www.nmas.com.mx/chihuahua/clima/continua-alerta-amarilla-por-lluvias-en-ciudad-juarez-reportan-diversas-inundaciones/" target="_blank" rel="noopener">Continúa alerta amarilla por lluvias en Ciudad Juárez</a>.</li>
+      <li>N+ Chihuahua (2 jul 2026). <a href="https://www.nmas.com.mx/chihuahua/sociedad/consumo-diario-de-agua-llega-a-300-litros-por-habitante-en-ciudad-juarez/" target="_blank" rel="noopener">Consumo diario de agua llega a 300 litros por habitante</a>.</li>
+      <li>Meteored México (jun 2025). <a href="https://www.meteored.mx/noticias/actualidad/torrenciales-lluvias-generan-caos-en-el-norte-del-pais-ciudad-juarez-chihuahua-tiempo-severo.html" target="_blank" rel="noopener">Torrenciales lluvias dieron paso a inundaciones severas en Ciudad Juárez</a>.</li>
+      <li>Gobierno del Estado de Chihuahua, CEPC (2025). <a href="https://www.chihuahua.gob.mx/sites/default/atach2/noticias/adjuntos/2025-07/Alerta%20Protecci%C3%B3n%20Civil%20ante%20pron%C3%B3stico%20de%20fuertes%20lluvias%20en%20Ju%C3%A1rez.pdf" target="_blank" rel="noopener">Alerta Protección Civil ante pronóstico de fuertes lluvias en Juárez</a>.</li>
+      <li>Gobierno del Estado de Chihuahua, CEPC (14 oct 2025). <a href="https://chihuahua.gob.mx/sites/default/atach2/noticias/adjuntos/2025-10/Atiende%20Protecci%C3%B3n%20Civil%20afectaciones%20por%20lluvias%20en%20Ciudad%20Ju%C3%A1rez.docx_.pdf" target="_blank" rel="noopener">Atiende Protección Civil afectaciones por lluvias en Ciudad Juárez</a>.</li>
+      <li>H. Congreso del Estado de Chihuahua. <a href="https://congresochihuahua2.gob.mx/biblioteca/iniciativas/archivosIniciativas/22305.docx" target="_blank" rel="noopener">Iniciativa sobre actualización del Atlas de Riesgo de Ciudad Juárez</a>.</li>
+      <li>Municipio de Juárez / SEDESOL. <a href="https://rmgir.proyectomesoamerica.org/PDFMunicipales/HABITAT/Vr_Atlas_Ciudad_Juarez.pdf" target="_blank" rel="noopener">Atlas de Riesgos de Cd. Juárez, Actualización 2010</a>.</li>
+      <li>Norte Digital (2022). <a href="https://nortedigital.mx/agua-turbulenta-ciudad-en-riesgo/" target="_blank" rel="noopener">Agua turbulenta: ciudad en riesgo (investigación sobre diques)</a>.</li>
+      <li>Soto-Ontiveros, A. et al. (2018). <a href="https://revistascientificas.uach.mx/index.php/tecnociencia/article/download/150/1892/7578" target="_blank" rel="noopener">Evolución temporal del flujo del agua subterránea en Ciudad Juárez</a>. TECNOCIENCIA Chihuahua.</li>
+      <li>Salas-Plata Mendoza, J. A. <a href="https://dialnet.unirioja.es/descarga/articulo/7293893.pdf" target="_blank" rel="noopener">Problemática del agua y crecimiento urbano en Ciudad Juárez</a>. CULCyT, UACJ.</li>
+      <li>Organización de las Naciones Unidas. Objetivos de Desarrollo Sostenible 3, 6, 11 y 13.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="contenedor">
+    <h3>Universidad Tecnológica de Ciudad Juárez</h3>
+    <p>TSU en Paramédico · Carta Descriptiva TR05 Competitividad · 2026</p>
+    <div class="integrantes">
+      <span>Integrante 1</span><span>Integrante 2</span><span>Integrante 3</span><span>Integrante 4</span>
+    </div>
+    <p style="font-size:.8rem">Docente: ____________________ · Grupo: ________</p>
+    <p style="font-size:.75rem;margin-top:16px;opacity:.7">Proyecto académico con fines educativos. La información de emergencias no sustituye las indicaciones oficiales de Protección Civil.</p>
+  </div>
+</footer>
+
+<button id="arriba" aria-label="Volver arriba">↑</button>
+
+<script>
+/* ===== LLUVIA ANIMADA EN CANVAS ===== */
+(function(){
+  const c=document.getElementById('lluvia'),ctx=c.getContext('2d');
+  let gotas=[],w,h;
+  function tam(){w=c.width=c.offsetWidth;h=c.height=c.offsetHeight;gotas=[];
+    const n=Math.min(260,Math.floor(w/5));
+    for(let i=0;i<n;i++)gotas.push({x:Math.random()*w,y:Math.random()*h,l:10+Math.random()*18,v:7+Math.random()*9,o:.15+Math.random()*.4});}
+  function dibujar(){ctx.clearRect(0,0,w,h);ctx.lineWidth=1.2;
+    for(const g of gotas){ctx.strokeStyle='rgba(179,229,252,'+g.o+')';ctx.beginPath();ctx.moveTo(g.x,g.y);ctx.lineTo(g.x-2,g.y+g.l);ctx.stroke();
+      g.y+=g.v;g.x-=.6;if(g.y>h){g.y=-20;g.x=Math.random()*w;}}
+    requestAnimationFrame(dibujar);}
+  window.addEventListener('resize',tam);tam();dibujar();
+})();
+
+/* ===== NAV, PROGRESO, BOTÓN ARRIBA ===== */
+const nav=document.getElementById('nav'),prog=document.getElementById('progreso'),arriba=document.getElementById('arriba');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY,max=document.documentElement.scrollHeight-innerHeight;
+  nav.classList.toggle('solida',y>60);
+  prog.style.width=(y/max*100)+'%';
+  arriba.classList.toggle('ver',y>600);
+  document.querySelectorAll('section[id]').forEach(s=>{
+    const a=document.querySelector('.menu a[href="#'+s.id+'"]');
+    if(a){const r=s.getBoundingClientRect();a.classList.toggle('activo',r.top<150&&r.bottom>150);}
+  });
+});
+arriba.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+const menu=document.getElementById('menu');
+document.getElementById('hamburguesa').onclick=()=>menu.classList.toggle('abierto');
+menu.querySelectorAll('a').forEach(a=>a.onclick=()=>menu.classList.remove('abierto'));
+
+/* ===== REVELAR AL HACER SCROLL + CONTADORES + BARRAS ===== */
+const obs=new IntersectionObserver(ents=>{
+  ents.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('visible');
+    e.target.querySelectorAll('[data-meta]').forEach(contar);
+    e.target.querySelectorAll('[data-ancho]').forEach(b=>b.style.width=b.dataset.ancho+'%');
+    obs.unobserve(e.target);
+  });
+},{threshold:.15});
+document.querySelectorAll('.revelar').forEach(el=>obs.observe(el));
+function contar(el){
+  const meta=+el.dataset.meta,inicio=meta>1000?1990:0,dur=1800,t0=performance.now();
+  (function paso(t){const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(inicio+(meta-inicio)*e).toLocaleString('es-MX').replace(meta>1000?/,/g:/$^/,'');
+    if(p<1)requestAnimationFrame(paso);})(t0);
+}
+
+/* ===== FILTRO DE ZONAS ===== */
+document.querySelectorAll('.filtro').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.filtro').forEach(x=>x.classList.remove('activo'));b.classList.add('activo');
+  const f=b.dataset.f;
+  document.querySelectorAll('.zona').forEach(z=>z.classList.toggle('oculta',f!=='todas'&&z.dataset.t!==f));
+});
+
+/* ===== SIMULADOR DE NIVEL DE AGUA ===== */
+const rango=document.getElementById('rango'),cm=document.getElementById('cm'),msj=document.getElementById('mensajeRiesgo');
+const sim=(function(){
+  const NS='http://www.w3.org/2000/svg',K=0.8; // 1 cm = 0.8 px
+  const $=id=>document.getElementById(id);
+  const aguaG=$('aguaG'),olaA=$('olaAtras'),olaF=$('olaFrente'),gCh=$('chorros'),gBa=$('basura'),gLl=$('lluviaEsc');
+  const per=$('gPersona'),aut=$('gAuto'),amb=$('gAmb'),lR=$('luzRoja'),lA=$('luzAzul'),fl=$('flecha');
+  const mk=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e;};
+  const chorros=[...Array(18)].map(()=>({x:Math.random()*650-50,f:Math.random(),l:18+Math.random()*34,el:mk('line',{'stroke-width':(1+Math.random()*1.6).toFixed(1)},gCh)}));
+  const basura=[{c:'#8d6e63',w:14,h:4},{c:'#a5d6a7',w:9,h:5},{c:'#eceff1',w:12,h:5}].map((b,i)=>({x:i*220,el:mk('rect',{width:b.w,height:b.h,rx:2,fill:b.c},gBa)}));
+  const gotas=[...Array(50)].map(()=>({x:Math.random()*620,y:Math.random()*300,v:6+Math.random()*5,el:mk('line',{},gLl)}));
+  let objetivo=0,h=0,t=0,fA=0,fF=0;
+  function cuadro(){
+    t++;h+=(objetivo-h)*0.05;
+    const c=h/K,vel=0.6+c*0.075;
+    aguaG.setAttribute('opacity',Math.min(1,h/3).toFixed(2));
+    aguaG.setAttribute('transform','translate(0,'+(-h).toFixed(2)+')');
+    fA=(fA+vel*0.55)%150;fF=(fF+vel)%150;
+    olaA.setAttribute('transform','translate('+(fA-150).toFixed(2)+',0)');
+    olaF.setAttribute('transform','translate('+(fF-150).toFixed(2)+',0)');
+    const prof=Math.max(0,h-6);
+    chorros.forEach(s=>{
+      s.x+=vel*(1.6+s.f*1.4);if(s.x>640){s.x=-60;s.f=Math.random();}
+      const y=304+s.f*prof;
+      s.el.setAttribute('x1',s.x.toFixed(1));s.el.setAttribute('x2',(s.x+s.l*(0.6+c/80)).toFixed(1));
+      s.el.setAttribute('y1',y.toFixed(1));s.el.setAttribute('y2',y.toFixed(1));
+      s.el.setAttribute('opacity',prof>2?(0.25+0.35*(1-s.f)).toFixed(2):0);
+    });
+    basura.forEach((b,i)=>{
+      b.x+=vel*1.3;if(b.x>620)b.x=-30;
+      b.el.setAttribute('x',b.x.toFixed(1));
+      b.el.setAttribute('y',(297+Math.sin(t*0.08+i)*2).toFixed(1));
+      b.el.setAttribute('transform','rotate('+(Math.sin(t*0.05+i)*20).toFixed(1)+' '+b.x.toFixed(1)+' 298)');
+      b.el.setAttribute('opacity',c>8?1:0);
+    });
+    gotas.forEach(g=>{g.y+=g.v;g.x-=1.2;if(g.y>300){g.y=-10;g.x=Math.random()*640;}
+      g.el.setAttribute('x1',g.x.toFixed(1));g.el.setAttribute('y1',g.y.toFixed(1));g.el.setAttribute('x2',(g.x-2).toFixed(1));g.el.setAttribute('y2',(g.y+12).toFixed(1));});
+    // reacción de objetos a la corriente
+    const pv=c>=15?Math.min(1,(c-10)/25):0;
+    per.setAttribute('transform','rotate('+(pv*10+Math.sin(t*0.09)*7*pv).toFixed(2)+' 64 300)');
+    const av=c>=30?Math.min(1,(c-25)/30):0;
+    aut.setAttribute('transform','translate('+(av*22+Math.sin(t*0.035)*7*av).toFixed(2)+','+(-av*7+Math.sin(t*0.07)*3*av).toFixed(2)+') rotate('+(Math.sin(t*0.05)*2.5*av).toFixed(2)+' 205 288)');
+    const mv=c>=60?Math.min(1,(c-55)/25):0;
+    amb.setAttribute('transform','translate('+(mv*10+Math.sin(t*0.03)*4*mv).toFixed(2)+','+(-mv*5+Math.sin(t*0.06)*2.5*mv).toFixed(2)+') rotate('+(Math.sin(t*0.045)*1.5*mv).toFixed(2)+' 458 280)');
+    const on=Math.floor(t/18)%2===0;lR.setAttribute('opacity',on?1:.25);lA.setAttribute('opacity',on?.25:1);
+    fl.setAttribute('opacity',c>3?.9:0);
+    requestAnimationFrame(cuadro);
+  }
+  requestAnimationFrame(cuadro);
+  return{nivel:v=>{objetivo=v*K;}};
+})();
+rango.oninput=()=>{
+  const v=+rango.value;cm.textContent=v;
+  sim.nivel(v);
+  let txt,cls;
+  if(v===0){txt='Sin agua: circulación normal. Mantente atento a los avisos de Protección Civil.';cls='r-bajo';}
+  else if(v<15){txt='Encharcamiento: precaución. El agua puede ocultar baches y alcantarillas abiertas.';cls='r-bajo';}
+  else if(v<30){txt='⚠ 15 cm de agua en movimiento pueden derribar a una persona adulta. No camines por la corriente.';cls='r-medio';}
+  else if(v<60){txt='⛔ 30 cm de agua en movimiento pueden hacer flotar y arrastrar un automóvil. La ambulancia NO debe cruzar.';cls='r-alto';}
+  else{txt='⛔ 60 cm o más arrastran camionetas y vehículos grandes, incluidas ambulancias. Peligro de muerte: busca terreno alto.';cls='r-alto';}
+  msj.textContent=txt;msj.className=cls;
+};
+
+/* ===== ACORDEÓN ===== */
+document.querySelectorAll('.acc-btn').forEach(b=>b.onclick=()=>{
+  const item=b.parentElement,cont=item.querySelector('.acc-cont'),abierto=item.classList.contains('abierto');
+  document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('abierto');i.querySelector('.acc-cont').style.maxHeight=null;});
+  if(!abierto){item.classList.add('abierto');cont.style.maxHeight=cont.scrollHeight+'px';}
+});
+
+/* ===== PESTAÑAS ===== */
+document.querySelectorAll('.pest').forEach(p=>p.onclick=()=>{
+  document.querySelectorAll('.pest').forEach(x=>x.classList.remove('activo'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('activo'));
+  p.classList.add('activo');document.getElementById(p.dataset.p).classList.add('activo');
+});
+
+/* ===== MOCHILA DE EMERGENCIA ===== */
+const checks=document.querySelectorAll('#items input');
+checks.forEach(c=>c.onchange=()=>{
+  const n=[...checks].filter(x=>x.checked).length;
+  document.getElementById('contMochila').textContent=n;
+  document.getElementById('barraMochila').style.width=(n/checks.length*100)+'%';
+  document.getElementById('msjMochila').textContent=n===checks.length?'¡Excelente! Tu mochila está completa. 🎉':'';
+});
+
+/* ===== CUESTIONARIO ===== */
+const preguntas=[
+  {p:'¿Cuánta agua en movimiento basta para arrastrar un automóvil?',o:['1 metro','30 centímetros','5 centímetros'],c:1,e:'Con unos 30 cm de agua en movimiento un auto puede flotar y ser arrastrado. Por eso una ambulancia nunca debe cruzar.'},
+  {p:'¿De dónde obtiene Ciudad Juárez su agua potable?',o:['Del río Bravo únicamente','De la presa El Granero','De acuíferos: Bolsón del Hueco y Bolsón de la Mesilla'],c:2,e:'La ciudad depende de agua subterránea de dos acuíferos compartidos con Estados Unidos.'},
+  {p:'¿Qué enfermedad se transmite por agua contaminada con orina de roedores?',o:['Leptospirosis','Dengue','Influenza'],c:0,e:'La leptospirosis entra por heridas o mucosas en contacto con agua de inundación contaminada.'},
+  {p:'Después de una inundación, ¿qué debes hacer con los recipientes con agua estancada?',o:['Dejarlos para regar','Voltearlos, taparlos o tirarlos','Agregarles azúcar'],c:1,e:'La descacharrización elimina criaderos de mosquitos transmisores de enfermedades.'},
+  {p:'¿Qué número debes marcar en una emergencia en México?',o:['066','9-1-1','070'],c:1,e:'El 9-1-1 es el número único de emergencias en todo México.'}
+];
+let qi=0,puntos=0;
+const qT=document.getElementById('qTexto'),qO=document.getElementById('qOpciones'),qE=document.getElementById('explicacion'),qS=document.getElementById('qSig');
+document.getElementById('qTotal').textContent=preguntas.length;
+function mostrar(){
+  const q=preguntas[qi];document.getElementById('qNum').textContent=qi+1;
+  qT.textContent=q.p;qO.innerHTML='';qE.textContent='';qS.style.display='none';
+  q.o.forEach((t,i)=>{const b=document.createElement('button');b.className='opcion';b.textContent=t;
+    b.onclick=()=>{qO.querySelectorAll('button').forEach(x=>x.disabled=true);
+      if(i===q.c){b.classList.add('correcta');puntos++;document.getElementById('qPuntos').textContent=puntos;}
+      else{b.classList.add('incorrecta');qO.children[q.c].classList.add('correcta');}
+      qE.textContent=q.e;qS.style.display='inline-flex';qS.textContent=qi<preguntas.length-1?'Siguiente ➜':'Ver resultado';};
+    qO.appendChild(b);});
+}
+qS.onclick=()=>{
+  if(qi<preguntas.length-1){qi++;mostrar();}
+  else{qT.textContent='¡Terminaste! Obtuviste '+puntos+' de '+preguntas.length+'.';qO.innerHTML='';
+    qE.textContent=puntos===preguntas.length?'¡Perfecto! Ya sabes cómo protegerte.':'Repasa las secciones de la página e inténtalo de nuevo.';
+    qS.textContent='Reintentar';qS.onclick=()=>location.reload();}
+};
+mostrar();
+</script>
+</body>
+</html>
